@@ -1,21 +1,32 @@
-import React from 'react';
 import { Routes, Route, Outlet, Link } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import Nav from './Components/Nav';
 import TaskOne from './Tasks/One';
 import TaskTwo from './Tasks/Two';
 import Instructions from './Components/Instructions';
+import fetcher from "./Utils/fetcher";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      queryFn: fetcher,
+    },
+  },
+});
 
 export default function App() {
   return (
     <div>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Instructions />} />
-          <Route path="task-1" element={<TaskOne />} />
-          <Route path="task-2" element={<TaskTwo />} />
-          <Route path="*" element={<NoMatch />} />
-        </Route>
-      </Routes>
+      <QueryClientProvider client={queryClient}>
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Instructions />} />
+            <Route path="task-1" element={<TaskOne />} />
+            <Route path="task-2" element={<TaskTwo />} />
+            <Route path="*" element={<NoMatch />} />
+          </Route>
+        </Routes>
+      </QueryClientProvider>
     </div>
   );
 }
